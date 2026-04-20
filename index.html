@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yu-Hsin Chang — Composer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #1a1a18;
+    --ink-mid:    #5a5a55;
+    --ink-soft:   #9a9a94;
+    --ink-faint:  #c8c8c2;
+    --paper:      #f7f6f2;
+    --paper-warm: #f0ede5;
+    --rule:       rgba(26,26,24,0.12);
+    --rule-soft:  rgba(26,26,24,0.07);
+    --accent:     #2a3d2e;
+    --serif: 'EB Garamond', Georgia, serif;
+    --mono:  'DM Mono', 'Courier New', monospace;
+    --max: 760px;
+    --pad: 2.5rem;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--serif); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .container { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--paper); border-bottom: 0.5px solid var(--rule); padding: 1rem 0; }
+  .nav-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); display: flex; justify-content: space-between; align-items: baseline; }
+  .nav-name { font-family: var(--serif); font-size: 0.9rem; font-weight: 400; letter-spacing: 0.04em; color: var(--ink); text-decoration: none; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 0.68rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* Hero */
+  .hero { padding: 5rem 0 4rem; border-bottom: 0.5px solid var(--rule); }
+  .hero-eyebrow { font-family: var(--mono); font-size: 0.65rem; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 1.25rem; }
+  .hero-name { font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 1.5rem; }
+  .hero-name em { font-style: italic; color: var(--ink-mid); font-size: 0.85em; }
+  .hero-bio { font-size: 1rem; color: var(--ink-mid); max-width: 500px; line-height: 1.8; }
+
+  /* Section */
+  section { padding: 3.5rem 0; border-bottom: 0.5px solid var(--rule); }
+  .section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; }
+  .section-title { font-family: var(--mono); font-size: 0.65rem; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); }
+  .section-rule { flex: 1; height: 0.5px; background: var(--rule); }
+
+  /* Filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1.75rem; }
+  .filter-btn { font-family: var(--mono); font-size: 0.6rem; font-weight: 300; letter-spacing: 0.08em; text-transform: lowercase; padding: 3px 10px; border: 0.5px solid var(--rule); background: transparent; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; }
+  .filter-btn:hover { color: var(--ink); border-color: var(--ink-mid); }
+  .filter-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .works-count { font-family: var(--mono); font-size: 0.62rem; font-weight: 300; letter-spacing: 0.1em; color: var(--ink-faint); margin-bottom: 1rem; }
+
+  /* Group label */
+  .group-label { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); padding: 1.5rem 0 0.75rem; border-top: 0.5px solid var(--rule-soft); margin-top: 0.5rem; }
+  .group-label:first-of-type { border-top: none; padding-top: 0; }
+
+  /* Work row */
+  .work-row { border-bottom: 0.5px solid var(--rule-soft); transition: opacity 0.2s; }
+  .work-row.hidden { display: none; }
+  .work-row-inner { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; padding: 1.1rem 0; align-items: start; }
+  .work-row:hover .work-title-en { color: var(--accent); }
+  .work-title-en { font-family: var(--serif); font-size: 1rem; font-weight: 400; color: var(--ink); margin-bottom: 0.1rem; transition: color 0.15s; }
+  .work-title-zh { font-family: var(--serif); font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 0.5rem; font-style: italic; }
+  .work-instrumentation { font-family: var(--mono); font-size: 0.62rem; font-weight: 300; color: var(--ink-soft); letter-spacing: 0.04em; margin-bottom: 0.5rem; line-height: 1.6; }
+  .work-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-family: var(--mono); font-size: 0.55rem; font-weight: 300; letter-spacing: 0.06em; padding: 2px 6px; border: 0.5px solid var(--rule); color: var(--ink-faint); }
+  .work-commission { font-family: var(--serif); font-size: 0.72rem; font-style: italic; color: var(--ink-faint); margin-top: 0.4rem; line-height: 1.5; }
+  .work-meta { text-align: right; min-width: 90px; }
+  .work-year { font-family: var(--mono); font-size: 0.65rem; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+  .work-duration { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.04em; margin-bottom: 0.5rem; }
+  .work-links { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+  .work-link { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.06em; color: var(--ink-soft); text-decoration: none; transition: color 0.15s; }
+  .work-link:hover { color: var(--accent); }
+
+  /* Media buttons */
+  .media-btn { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.08em; padding: 2px 8px; border: 0.5px solid var(--rule); background: transparent; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .media-btn:hover { color: var(--ink); border-color: var(--ink-mid); }
+  .media-btn.open { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* Embed panel */
+  .embed-panel { overflow: hidden; max-height: 0; transition: max-height 0.35s ease, padding 0.25s ease; padding: 0; }
+  .embed-panel.open { max-height: 520px; padding: 1rem 0 1.25rem; border-top: 0.5px solid var(--rule-soft); }
+  .embed-panel iframe { width: 100%; border: none; display: block; }
+  .track-label { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.1em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 0.4rem; margin-top: 0.75rem; }
+  .track-label:first-child { margin-top: 0; }
+
+  /* About */
+  .about-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; align-items: start; }
+  .about-tags { display: flex; flex-direction: column; gap: 6px; margin-top: 1rem; }
+  .about-tag { font-family: var(--mono); font-size: 0.6rem; font-weight: 300; letter-spacing: 0.08em; color: var(--ink-soft); padding: 3px 0; border-bottom: 0.5px solid var(--rule-soft); }
+  .about-text p { font-family: var(--serif); font-size: 0.95rem; color: var(--ink-mid); line-height: 1.85; margin-bottom: 1rem; }
+  .about-text p:last-child { margin-bottom: 0; }
+
+  /* Teaching */
+  .teaching-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .teaching-item { padding: 1rem 0; border-bottom: 0.5px solid var(--rule-soft); }
+  .teaching-item:nth-child(odd) { padding-right: 2rem; }
+  .teaching-item:nth-child(even) { padding-left: 2rem; border-left: 0.5px solid var(--rule-soft); }
+  .teaching-course { font-family: var(--serif); font-size: 0.9rem; color: var(--ink); margin-bottom: 0.2rem; }
+  .teaching-meta { font-family: var(--mono); font-size: 0.6rem; font-weight: 300; letter-spacing: 0.06em; color: var(--ink-soft); }
+
+  /* Contact */
+  .contact-list { list-style: none; }
+  .contact-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.85rem 0; border-bottom: 0.5px solid var(--rule-soft); }
+  .contact-item:first-child { border-top: 0.5px solid var(--rule-soft); }
+  .contact-label { font-family: var(--mono); font-size: 0.62rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+  .contact-value { font-family: var(--serif); font-size: 0.9rem; color: var(--ink-mid); text-decoration: none; transition: color 0.15s; }
+  .contact-value:hover { color: var(--accent); }
+
+  /* Footer */
+  footer { padding: 2rem 0 3rem; }
+  .footer-inner { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.08em; color: var(--ink-faint); }
+  .footer-academic { font-family: var(--mono); font-size: 0.58rem; font-weight: 300; letter-spacing: 0.06em; color: var(--ink-faint); text-decoration: none; transition: color 0.15s; }
+  .footer-academic:hover { color: var(--ink-soft); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .hero { animation: fadeUp 0.6s ease both; }
+  section { animation: fadeUp 0.6s ease both; }
+  section:nth-of-type(2) { animation-delay: 0.08s; }
+  section:nth-of-type(3) { animation-delay: 0.14s; }
+  section:nth-of-type(4) { animation-delay: 0.2s; }
+
+  @media (max-width: 600px) {
+    :root { --pad: 1.25rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .teaching-grid { grid-template-columns: 1fr; }
+    .teaching-item:nth-child(even) { padding-left: 0; border-left: none; }
+    .footer-inner { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+    .work-row-inner { grid-template-columns: 1fr; }
+    .work-meta { text-align: left; }
+    .work-links { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+    .nav-links { gap: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-name">Yu-Hsin Chang</a>
+    <ul class="nav-links">
+      <li><a href="#works">Works</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#teaching">Teaching</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <p class="hero-eyebrow">Composer-Performer · Music Technologist · Scholar</p>
+    <h1 class="hero-name">Yu-Hsin Chang<br><em>張 譽 馨</em></h1>
+    <p class="hero-bio">Working at the intersection of contemporary classical composition, East Asian musical heritage, and electroacoustic technology. Based in Asia; works performed internationally.</p>
+  </div>
+</div>
+
+<div class="container">
+  <section id="works">
+    <div class="section-header">
+      <span class="section-title">Works</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">all</button>
+      <button class="filter-btn" data-filter="acoustic">acoustic</button>
+      <button class="filter-btn" data-filter="east-asian">east asian</button>
+      <button class="filter-btn" data-filter="electroacoustic">electroacoustic</button>
+      <button class="filter-btn" data-filter="audiovisual">audiovisual</button>
+      <button class="filter-btn" data-filter="live-electronics">live electronics</button>
+      <button class="filter-btn" data-filter="fixed-media">fixed media</button>
+      <button class="filter-btn" data-filter="solo">solo</button>
+      <button class="filter-btn" data-filter="duo">duo</button>
+      <button class="filter-btn" data-filter="chamber">chamber</button>
+      <button class="filter-btn" data-filter="orchestra">orchestra</button>
+      <button class="filter-btn" data-filter="vocal">vocal</button>
+    </div>
+    <p class="works-count" id="works-count">21 works</p>
+    <div id="works-list">
+
+      <p class="group-label" id="grp-original">Original works</p>
+
+      <!-- 讀聲 -->
+      <div class="work-row" data-tags="east-asian electroacoustic audiovisual fixed-media chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Resounding Scripts: From October 1944 to August 1945</p>
+            <p class="work-title-zh">讀聲：1944.10–1945.08</p>
+            <p class="work-instrumentation">Flute, violin, guzheng, sheng, tape, multimedia</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">electroacoustic</span><span class="tag">audiovisual</span><span class="tag">fixed media</span><span class="tag">chamber</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2024</p><p class="work-duration">ca. 30 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-dusheng" data-type="youtube" data-id="4PWLHjX2RbY">▶ Watch</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-dusheng">
+          <iframe src="" data-src="https://www.youtube.com/embed/4PWLHjX2RbY" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 飛越永恆之鳥 -->
+      <div class="work-row" data-tags="east-asian acoustic orchestra" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Flight of the Eternal Birds</p>
+            <p class="work-title-zh">飛越永恆之鳥</p>
+            <p class="work-instrumentation">Chinese orchestra</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">orchestra</span></div>
+            <p class="work-commission">Commissioned by NTNU Alumni Chinese Orchestra</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2024</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-feiyue" data-type="youtube" data-id="v93TOY-fUVY">▶ Watch</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-feiyue">
+          <iframe src="" data-src="https://www.youtube.com/embed/v93TOY-fUVY" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- Centauri -->
+      <div class="work-row" data-tags="acoustic chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Centauri [M]</p>
+            <p class="work-title-zh">擬似比鄰星</p>
+            <p class="work-instrumentation">Flute, oboe d'amore, clarinet</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">chamber</span></div>
+            <p class="work-commission">Commissioned by CHUNG Hsiao-Hsuan &amp; TimeArt Studio</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2023</p><p class="work-duration">ca. 7 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 苔岩一色 -->
+      <div class="work-row" data-tags="east-asian acoustic duo" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Moss Rocks</p>
+            <p class="work-title-zh">苔岩一色</p>
+            <p class="work-instrumentation">Pipa, daruan</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">duo</span></div>
+            <p class="work-commission">Commissioned by ISCM World Music Days 2023</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2023</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-mossrocks-yt" data-type="youtube" data-id="roY4_KQ1vhs">▶ Watch</button>
+              <button class="media-btn" data-target="embed-mossrocks-sc" data-type="soundcloud" data-id="sorasinewaves/mossrocks">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-mossrocks-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/roY4_KQ1vhs" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-mossrocks-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/mossrocks&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 遶 -->
+      <div class="work-row" data-tags="east-asian acoustic duo" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Ráo</p>
+            <p class="work-title-zh">遶</p>
+            <p class="work-instrumentation">Two pipas</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">duo</span></div>
+            <p class="work-commission">Commissioned by Pipa Ensemble 《匯》</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2023</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-rao-yt" data-type="youtube" data-id="D0RPIq5FbMU">▶ Watch</button>
+              <button class="media-btn" data-target="embed-rao-sc" data-type="soundcloud" data-id="sorasinewaves/ra-o-for-pipa-duet">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-rao-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/D0RPIq5FbMU" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-rao-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/ra-o-for-pipa-duet&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- SUR.VEIL.LANCE -->
+      <div class="work-row" data-tags="electroacoustic live-electronics chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">SUR.VEIL.LANCE</p>
+            <p class="work-instrumentation">Viola and 49-channel electronics</p>
+            <div class="work-tags"><span class="tag">electroacoustic</span><span class="tag">live electronics</span><span class="tag">chamber</span></div>
+            <p class="work-commission">IRCAM Workshop Presentation</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2023</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-svl-yt" data-type="youtube" data-id="gOR37x4Zjqw">▶ Watch</button>
+              <button class="media-btn" data-target="embed-svl-sc" data-type="soundcloud" data-id="sorasinewaves/surveillance">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-svl-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/gOR37x4Zjqw" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-svl-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/surveillance&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 穗 Panicle -->
+      <div class="work-row" data-tags="east-asian acoustic solo" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Panicle</p>
+            <p class="work-title-zh">穗</p>
+            <p class="work-instrumentation">Solo pipa</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">solo</span></div>
+            <p class="work-commission">Co-commissioned by HUANG Li-Teng &amp; NTU Center for the Arts</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2022</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-panicle-yt" data-type="youtube" data-id="9LCTbfwEbJc">▶ Watch</button>
+              <button class="media-btn" data-target="embed-panicle-sc" data-type="soundcloud" data-id="sorasinewaves/panicle">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-panicle-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/9LCTbfwEbJc" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-panicle-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/panicle&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 鱗翅 Lepidoptera -->
+      <div class="work-row" data-tags="acoustic duo" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Lepidoptera</p>
+            <p class="work-title-zh">鱗翅</p>
+            <p class="work-instrumentation">Two pianos</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">duo</span></div>
+            <p class="work-commission">Commissioned by FORMUSICA</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2022</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-lepi-yt" data-type="youtube" data-id="G5SKaZzLFJ0">▶ Watch</button>
+              <button class="media-btn" data-target="embed-lepi-sc" data-type="soundcloud" data-id="sorasinewaves/lepidoptera">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-lepi-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/G5SKaZzLFJ0" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-lepi-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/lepidoptera&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 軸 — 3 movements -->
+      <div class="work-row" data-tags="vocal chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">軸 <span style="font-weight:400;font-style:italic;font-size:0.88em;color:var(--ink-soft)">(Axis)</span></p>
+            <p class="work-instrumentation">SATB chorus</p>
+            <div class="work-tags"><span class="tag">vocal</span><span class="tag">chamber</span></div>
+            <p class="work-commission">Commissioned by ACL Music Taiwan 2021</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2021</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-zhou" data-type="multi">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-zhou">
+          <p class="track-label">I.</p>
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/lost-in-memoriam-3&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="80" loading="lazy"></iframe>
+          <p class="track-label">II.</p>
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/lost-in-memoriam-2&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="80" loading="lazy"></iframe>
+          <p class="track-label">III.</p>
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/lost-in-memoriam-3?si=a84dcdf003474bdd8a11314e1dbcc1fe&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="80" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 山・鬼・回聲 Séance -->
+      <div class="work-row" data-tags="east-asian electroacoustic fixed-media" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Séance</p>
+            <p class="work-title-zh">山・鬼・回聲</p>
+            <p class="work-instrumentation">Bamboo flute, electronics</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">electroacoustic</span><span class="tag">fixed media</span></div>
+            <p class="work-commission">Commissioned by FORMUSICA</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2021</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-seance-yt" data-type="youtube" data-id="FsFAybq02ZE">▶ Watch</button>
+              <button class="media-btn" data-target="embed-seance-sc" data-type="soundcloud" data-id="sorasinewaves/seance">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-seance-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/FsFAybq02ZE" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-seance-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/seance&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 彼岸荼蘼 -->
+      <div class="work-row" data-tags="acoustic chamber vocal" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Amaryllidaceae</p>
+            <p class="work-title-zh">彼岸荼蘼</p>
+            <p class="work-instrumentation">Piano, string trio, female voices</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">chamber</span><span class="tag">vocal</span></div>
+            <p class="work-commission">Sponsored by National Culture and Arts Foundation</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2020</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <!-- Replace assets/scores/amaryllidaceae.pdf with actual path -->
+              <a href="assets/scores/amaryllidaceae.pdf" class="work-link">Score ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 致散佚之光 -->
+      <div class="work-row" data-tags="acoustic solo" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">On Elapsed Light, Celestial Bodies and Time</p>
+            <p class="work-title-zh">致散佚之光、星體與時間</p>
+            <p class="work-instrumentation">Solo piano</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">solo</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2020</p><p class="work-duration">ca. 5 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 未竟之凋 -->
+      <div class="work-row" data-tags="east-asian acoustic chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">In the Midst of Withering</p>
+            <p class="work-title-zh">未竟之凋</p>
+            <p class="work-instrumentation">Flute, sheng, double bass</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">chamber</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2019</p><p class="work-duration">ca. 6 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 夏花 -->
+      <div class="work-row" data-tags="east-asian acoustic chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Summer Blossoms</p>
+            <p class="work-title-zh">夏花</p>
+            <p class="work-instrumentation">5 pipas</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">chamber</span></div>
+            <p class="work-commission">Sponsored by National Culture and Arts Foundation</p>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2019</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 寂滅陰陽 -->
+      <div class="work-row" data-tags="east-asian acoustic chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Evanescent Yin-Yang</p>
+            <p class="work-title-zh">寂滅陰陽</p>
+            <p class="work-instrumentation">Sizhu chamber ensemble</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">chamber</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2019</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-yinyang-yt" data-type="youtube" data-id="SlZOgLE8MrE">▶ Watch</button>
+              <button class="media-btn" data-target="embed-yinyang-sc" data-type="soundcloud" data-id="sorasinewaves/evernescent-yin-yang">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-yinyang-yt">
+          <iframe src="" data-src="https://www.youtube.com/embed/SlZOgLE8MrE" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="embed-panel" id="embed-yinyang-sc">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/evernescent-yin-yang&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 凍火 -->
+      <div class="work-row" data-tags="acoustic duo" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Frozen Sparks</p>
+            <p class="work-title-zh">凍火</p>
+            <p class="work-instrumentation">Bass clarinet, viola</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">duo</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2019</p><p class="work-duration">ca. 5 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 滿汀芳草 -->
+      <div class="work-row" data-tags="acoustic chamber" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">While Fragrant Grasses Rooting in…</p>
+            <p class="work-title-zh">滿汀芳草</p>
+            <p class="work-instrumentation">Flute, clarinet, violin, viola, cello, piano, percussion</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">chamber</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2018</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-fragrant" data-type="youtube" data-id="HRjeQUOdEHM">▶ Watch</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-fragrant">
+          <iframe src="" data-src="https://www.youtube.com/embed/HRjeQUOdEHM" height="200" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 月食牽引之潮 -->
+      <div class="work-row" data-tags="acoustic orchestra" data-group="original">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Seatides under Lunar Eclipse</p>
+            <p class="work-title-zh">月食牽引之潮</p>
+            <p class="work-instrumentation">2-2-2-2 orchestra</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">orchestra</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2018</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="group-label" id="grp-arr">Arrangements</p>
+
+      <!-- 訴 Su -->
+      <div class="work-row" data-tags="east-asian acoustic chamber" data-group="arr">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Su: On Tang Poem Pipaxing</p>
+            <p class="work-title-zh">訴——讀唐詩《琵琶行》有感</p>
+            <p class="work-instrumentation">Pipa, string quartet</p>
+            <div class="work-tags"><span class="tag">east asian</span><span class="tag">acoustic</span><span class="tag">chamber</span><span class="tag">arrangement</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2013</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-su" data-type="soundcloud" data-id="sorasinewaves/suforpipaandstringquartet">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-su">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/suforpipaandstringquartet&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 丟丟銅仔狂想 -->
+      <div class="work-row" data-tags="acoustic duo" data-group="arr">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Diu-diu-dang-a Rhapsody</p>
+            <p class="work-title-zh">隧道、列車、陣雨——丟丟銅仔狂想</p>
+            <p class="work-instrumentation">Flute, piano</p>
+            <div class="work-tags"><span class="tag">acoustic</span><span class="tag">duo</span><span class="tag">arrangement</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2013</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links">
+              <button class="media-btn" data-target="embed-diu" data-type="soundcloud" data-id="sorasinewaves/6c97b7ff-93be-403f-a9b3-2056964f0162">♫ Listen</button>
+            </div>
+          </div>
+        </div>
+        <div class="embed-panel" id="embed-diu">
+          <iframe src="" data-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sorasinewaves/6c97b7ff-93be-403f-a9b3-2056964f0162&color=%23524f48&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" height="96" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- 李泰祥 -->
+      <div class="work-row" data-tags="vocal chamber" data-group="arr">
+        <div class="work-row-inner">
+          <div>
+            <p class="work-title-en">Songs by LI Tai-Hsiang: Story of Spring · You are All My Memory</p>
+            <p class="work-title-zh">李泰祥歌曲《春天的故事》、《你是我所有的回憶》</p>
+            <p class="work-instrumentation">SATB choir</p>
+            <div class="work-tags"><span class="tag">vocal</span><span class="tag">chamber</span><span class="tag">arrangement</span></div>
+          </div>
+          <div class="work-meta">
+            <p class="work-year">2024</p><p class="work-duration">ca. 10 mins.</p>
+            <div class="work-links"><span class="work-link">In production</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- About -->
+<div class="container">
+  <section id="about">
+    <div class="section-header">
+      <span class="section-title">About</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="about-grid">
+      <div>
+        <div class="about-tags">
+          <span class="about-tag">Composition</span>
+          <span class="about-tag">Electroacoustic</span>
+          <span class="about-tag">Music Technology</span>
+          <span class="about-tag">East Asian Music</span>
+          <span class="about-tag">Music Theory</span>
+          <span class="about-tag">Scholarly Research</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <p>Yu-Hsin Chang is a Taiwanese composer-performer and music technologist whose work explores the intersection of contemporary classical composition and East Asian musical heritage. Drawing on electroacoustic techniques, extended performance practice, and experimental methods, her music traces the metamorphosis of sonic tradition—reconstructing aesthetic and symbolic meaning through sound, texture, and pulse.</p>
+        <p>Her research engages with interactive music programming, augmented improvisation, immersive sound spatialization, and the dissemination of contemporary East Asian music. She holds a Ph.D. in Composition and Music Theory from the University of California, Davis, and currently serves as Assistant Professor at the Academy of Music, Macau University of Science and Technology.</p>
+        <p>Her compositions have been performed at international festivals and venues including the Asian Composers League, International Society for Contemporary Music (ISCM), Earplay concert series, C-Lab Taiwan Sound Lab, Etchings Festival, Mise-En Music Festival, Cortona Sessions, and Shanghai Conservatory New Music Week, with support from the National Culture and Arts Foundation of Taiwan.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Teaching -->
+<div class="container">
+  <section id="teaching">
+    <div class="section-header">
+      <span class="section-title">Teaching</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="teaching-grid">
+      <div class="teaching-item">
+        <p class="teaching-course">Music Theory &amp; Harmony</p>
+        <p class="teaching-meta">Undergraduate</p>
+      </div>
+      <div class="teaching-item">
+        <p class="teaching-course">Form and Analysis</p>
+        <p class="teaching-meta">Undergraduate</p>
+      </div>
+      <div class="teaching-item">
+        <p class="teaching-course">Orchestration &amp; Arranging</p>
+        <p class="teaching-meta">Undergraduate / Graduate</p>
+      </div>
+      <div class="teaching-item">
+        <p class="teaching-course">Electroacoustic Music Production</p>
+        <p class="teaching-meta">Undergraduate / Graduate</p>
+      </div>
+      <div class="teaching-item">
+        <p class="teaching-course">Audiovisual &amp; Interactive Arts</p>
+        <p class="teaching-meta">Graduate</p>
+      </div>
+      <div class="teaching-item">
+        <p class="teaching-course">Composition Studio</p>
+        <p class="teaching-meta">Undergraduate / Graduate</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Contact -->
+<div class="container">
+  <section id="contact">
+    <div class="section-header">
+      <span class="section-title">Contact</span>
+      <div class="section-rule"></div>
+    </div>
+    <ul class="contact-list">
+      <li class="contact-item">
+        <span class="contact-label">Email</span>
+        <!-- Replace with your email -->
+        <a href="mailto:muse.noire@gmail.com" class="contact-value">muse.noire@gmail.com</a>
+      </li>
+      <li class="contact-item">
+        <span class="contact-label">SoundCloud</span>
+        <a href="https://soundcloud.com/sorasinewaves" class="contact-value" target="_blank" rel="noopener">soundcloud.com/sorasinewaves</a>
+      </li>
+      <li class="contact-item">
+        <span class="contact-label">YouTube</span>
+        <!-- Replace # with your YouTube channel URL -->
+        <a href="https://www.youtube.com/@changyuhsin" class="contact-value" target="_blank" rel="noopener">youtube.com/@changyuhsin</a>
+      </li>
+      <li class="contact-item">
+        <span class="contact-label">Google Scholar</span>
+        <!-- Replace # with Academia.edu or ResearchGate URL -->
+        <a href="https://scholar.google.com/citations?user=lQX1JzUAAAAJ&hl=zh-TW" class="contact-value" target="_blank" rel="noopener">Google Scholar ↗</a>
+      </li>
+    </ul>
+    <p style="font-family: var(--mono); font-size: 0.62rem; font-weight: 300; letter-spacing: 0.06em; color: var(--ink-soft); margin-top: 1.75rem; line-height: 1.8;">Full scores and portfolio materials available upon request for professional and academic inquiries.</p>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 Yu-Hsin Chang</span>
+    
+    <a href="https://scholar.google.com/citations?user=lQX1JzUAAAAJ&hl=zh-TW" class="footer-academic" target="_blank" rel="noopener">Google Scholar ↗</a>
+  </div>
+</footer>
+
+<script>
+  /* Filter */
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const workRows   = document.querySelectorAll('.work-row');
+  const countEl    = document.getElementById('works-count');
+  const grpOrig    = document.getElementById('grp-original');
+  const grpArr     = document.getElementById('grp-arr');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      let visible = 0;
+      workRows.forEach(row => {
+        const show = filter === 'all' || row.dataset.tags.includes(filter);
+        row.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      countEl.textContent = visible + (visible === 1 ? ' work' : ' works');
+      grpOrig.style.display = [...workRows].some(r => r.dataset.group === 'original' && !r.classList.contains('hidden')) ? '' : 'none';
+      grpArr.style.display  = [...workRows].some(r => r.dataset.group === 'arr'      && !r.classList.contains('hidden')) ? '' : 'none';
+    });
+  });
+
+  /* Embed toggle — one panel open per row; lazy-loads iframe src on first open */
+  document.querySelectorAll('.media-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panelId   = btn.dataset.target;
+      const panel     = document.getElementById(panelId);
+      const isOpen    = panel.classList.contains('open');
+      const parentRow = btn.closest('.work-row');
+
+      // Close all panels and buttons within this row
+      parentRow.querySelectorAll('.embed-panel').forEach(p => p.classList.remove('open'));
+      parentRow.querySelectorAll('.media-btn').forEach(b => b.classList.remove('open'));
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        // Lazy-load: set src only on first open
+        panel.querySelectorAll('iframe').forEach(iframe => {
+          if (!iframe.src || iframe.src === window.location.href) {
+            iframe.src = iframe.dataset.src;
+          }
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
