@@ -787,8 +787,9 @@
         btn.classList.add('open');
         // Lazy-load: set src only on first open
         panel.querySelectorAll('iframe').forEach(iframe => {
-          if (!iframe.src || iframe.src === window.location.href) {
+          if (iframe.dataset.src) {
             iframe.src = iframe.dataset.src;
+            delete iframe.dataset.src;
           }
         });
       }
